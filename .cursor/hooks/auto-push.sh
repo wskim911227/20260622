@@ -4,6 +4,12 @@
 cat > /dev/null
 
 PROJECT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+LOG_FILE="${PROJECT_ROOT}/.git/auto-push.log"
+
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+}
+
 if [ -z "$PROJECT_ROOT" ]; then
   exit 0
 fi
@@ -28,6 +34,10 @@ if [ -z "$BRANCH" ]; then
   BRANCH="main"
 fi
 
-git push origin "$BRANCH" 2>/dev/null || git push -u origin "$BRANCH" 2>/dev/null
+if git push origin "$BRANCH" >> "$LOG_FILE" 2>&1; then
+  log "Push succeeded (${BRANCH})"
+else
+  log "Push failed (${BRANCH}) - GitHub 인증 확인 필요"
+fi
 
 exit 0
