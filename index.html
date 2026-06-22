@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로또 추첨기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="top-nav" aria-label="주요 메뉴">
+    <span class="top-nav__mark">LOTTO</span>
+    <span class="top-nav__label">6 / 45</span>
+  </nav>
+
+  <section class="hero-band" aria-labelledby="hero-title">
+    <div class="hero-band__overlay">
+      <p class="section-label">Number Generator</p>
+      <h1 id="hero-title" class="hero-title">로또 추첨기</h1>
+      <p class="hero-subtitle">1~45 중 6개의 행운의 번호를 뽑아보세요</p>
+    </div>
+  </section>
+
+  <main class="editorial">
+    <section class="draw-area card-elevated" aria-label="추첨 영역">
+      <p class="section-label">Draw</p>
+
+      <div class="lotto-machine" id="lottoMachine">
+        <div class="machine-frame">
+          <div class="machine-drum" id="machineDrum">
+            <div class="drum-cap drum-cap--top"></div>
+            <div class="drum-glass">
+              <div class="drum-balls" id="drumBalls" aria-hidden="true"></div>
+            </div>
+            <div class="drum-neck"></div>
+          </div>
+
+          <div class="machine-chute">
+            <div class="chute-glass"></div>
+            <div class="chute-ball" id="chuteBall" hidden></div>
+          </div>
+        </div>
+
+        <div class="result-board" aria-live="polite" aria-label="추첨 번호">
+          <div class="result-slots" id="balls">
+            <div class="result-slot" data-index="0"><div class="ball slot-ball placeholder">?</div></div>
+            <div class="result-slot" data-index="1"><div class="ball slot-ball placeholder">?</div></div>
+            <div class="result-slot" data-index="2"><div class="ball slot-ball placeholder">?</div></div>
+            <div class="result-slot" data-index="3"><div class="ball slot-ball placeholder">?</div></div>
+            <div class="result-slot" data-index="4"><div class="ball slot-ball placeholder">?</div></div>
+            <div class="result-slot" data-index="5"><div class="ball slot-ball placeholder">?</div></div>
+          </div>
+
+          <div class="bonus-section" id="bonusSection" hidden>
+            <span class="badge-pill">Bonus</span>
+            <div class="result-slot bonus-slot">
+              <div class="ball slot-ball bonus placeholder" id="bonusBall">?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="추첨 설정">
+      <div class="control-row card-elevated">
+        <label class="toggle">
+          <input type="checkbox" id="includeBonus" checked>
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">보너스 번호 포함</span>
+        </label>
+      </div>
+
+      <div class="control-row card-elevated">
+        <label for="countSelect" class="control-label">한 번에 생성</label>
+        <select id="countSelect" class="select-input">
+          <option value="1">1세트</option>
+          <option value="3">3세트</option>
+          <option value="5" selected>5세트</option>
+          <option value="10">10세트</option>
+        </select>
+      </div>
+
+      <button class="btn-primary" id="drawBtn" type="button">추첨하기</button>
+    </section>
+
+    <section class="history card-elevated" id="historySection" hidden>
+      <div class="history-header">
+        <h2 class="title-md">추첨 결과</h2>
+        <button class="btn-outline" id="clearBtn" type="button">전체 삭제</button>
+      </div>
+      <ul class="history-list" id="historyList"></ul>
+    </section>
+  </main>
+
+  <section class="light-band winning-history" id="winningHistory" aria-labelledby="winning-title">
+    <div class="light-band__inner">
+      <div class="winning-history-header">
+        <div>
+          <p class="section-label section-label--on-light">Archive</p>
+          <h2 id="winning-title" class="title-md title-md--on-light">역대 1등 당첨번호</h2>
+        </div>
+        <input
+          type="search"
+          id="roundSearch"
+          class="text-input text-input--on-light"
+          placeholder="회차 검색"
+          inputmode="numeric"
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="winning-loading" id="winningLoading">당첨 정보를 불러오는 중...</div>
+      <div class="winning-error" id="winningError" hidden></div>
+
+      <div class="winning-table-wrap" id="winningTableWrap" hidden>
+        <table class="winning-table">
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>추첨일</th>
+              <th>당첨번호</th>
+              <th>1등 당첨금</th>
+              <th>당첨자</th>
+            </tr>
+          </thead>
+          <tbody id="winningTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="winning-pagination" id="winningPagination" hidden>
+        <button type="button" class="btn-outline btn-outline--on-light" id="prevPageBtn" disabled>이전</button>
+        <span class="page-info" id="pageInfo"></span>
+        <button type="button" class="btn-outline btn-outline--on-light" id="nextPageBtn">다음</button>
+      </div>
+
+      <p class="data-source">데이터 출처: <a href="https://www.dhlottery.co.kr" target="_blank" rel="noopener">동행복권</a></p>
+    </div>
+  </section>
+
+  <footer class="footer-dark">
+    <p>※ 본 추첨기는 무작위 번호 생성 도구이며, 당첨을 보장하지 않습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
