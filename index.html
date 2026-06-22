@@ -92,6 +92,50 @@
       </div>
       <ul class="history-list" id="historyList"></ul>
     </section>
+
+    <section class="saju-chat card-elevated" id="sajuChat" aria-labelledby="saju-chat-title">
+      <div class="saju-chat__header">
+        <p class="section-label">Saju Advisor</p>
+        <h2 id="saju-chat-title" class="title-md">사주 로또 상담</h2>
+        <p class="saju-chat__desc">성별과 생년월일을 입력하면 사주에 맞는 번호를 추천해 드립니다.</p>
+      </div>
+
+      <form class="saju-profile" id="sajuProfileForm">
+        <div class="saju-profile__row">
+          <label class="control-label" for="sajuGender">성별</label>
+          <select id="sajuGender" class="select-input" required>
+            <option value="">선택</option>
+            <option value="male">남성</option>
+            <option value="female">여성</option>
+          </select>
+        </div>
+        <div class="saju-profile__row">
+          <label class="control-label" for="sajuBirthDate">생년월일</label>
+          <input type="date" id="sajuBirthDate" class="text-input text-input--dark" required>
+        </div>
+        <div class="saju-profile__row">
+          <label class="control-label" for="sajuBirthTime">출생시간 <span class="optional-tag">(선택)</span></label>
+          <input type="time" id="sajuBirthTime" class="text-input text-input--dark">
+        </div>
+        <button type="button" class="btn-primary" id="sajuRecommendBtn">사주 번호 추천</button>
+      </form>
+
+      <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+
+      <form class="chat-input-form" id="chatInputForm">
+        <input
+          type="text"
+          id="chatInput"
+          class="text-input text-input--dark chat-input"
+          placeholder="추가 질문을 입력하세요..."
+          autocomplete="off"
+          disabled
+        >
+        <button type="submit" class="btn-outline chat-send-btn" id="chatSendBtn" disabled>전송</button>
+      </form>
+
+      <p class="saju-disclaimer">※ 사주 분석은 참고용이며, 당첨을 보장하지 않습니다.</p>
+    </section>
   </main>
 
   <section class="light-band winning-history" id="winningHistory" aria-labelledby="winning-title">
@@ -144,5 +188,6 @@
   </footer>
 
   <script src="app.js"></script>
+  <script src="chat.js"></script>
 </body>
 </html>
