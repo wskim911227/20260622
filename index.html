@@ -93,6 +93,20 @@
       <ul class="history-list" id="historyList"></ul>
     </section>
 
+    <section class="saved-draws card-elevated" id="savedDrawsSection" aria-labelledby="saved-draws-title">
+      <div class="saved-draws-header">
+        <div>
+          <p class="section-label">Storage</p>
+          <h2 id="saved-draws-title" class="title-md">저장된 추첨</h2>
+        </div>
+        <button type="button" class="btn-outline btn-outline--sm" id="refreshSavedBtn">새로고침</button>
+      </div>
+      <div class="saved-draws-loading" id="savedDrawsLoading">저장 기록을 불러오는 중...</div>
+      <div class="saved-draws-error" id="savedDrawsError" hidden></div>
+      <ul class="saved-draws-list" id="savedDrawsList"></ul>
+      <p class="saved-draws-empty" id="savedDrawsEmpty" hidden>아직 저장된 추첨이 없습니다.</p>
+    </section>
+
     <section class="saju-chat card-elevated" id="sajuChat" aria-labelledby="saju-chat-title">
       <div class="saju-chat__header">
         <p class="section-label">Saju Advisor</p>
@@ -187,6 +201,7 @@
     <p>※ 본 추첨기는 무작위 번호 생성 도구이며, 당첨을 보장하지 않습니다.</p>
   </footer>
 
+  <script src="storage.js"></script>
   <script src="app.js"></script>
   <script src="chat.js"></script>
 </body>

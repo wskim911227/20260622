@@ -148,6 +148,21 @@ async function callSajuApi(message = null) {
       content: `[추천번호: ${data.numbers.join(", ")} + ${data.bonus}] ${data.sajuSummary} ${data.explanation}`,
     });
 
+    if (!message) {
+      try {
+        await LottoStorage.saveLottoDraw({
+          numbers: data.numbers,
+          bonus: data.bonus,
+          source: "saju",
+          sajuSummary: data.sajuSummary,
+          explanation: data.explanation,
+        });
+        if (typeof window.loadSavedDraws === "function") window.loadSavedDraws();
+      } catch (err) {
+        console.warn("사주 추천 저장 실패:", err.message);
+      }
+    }
+
     setChatEnabled(true);
   } catch {
     removeLoading();

@@ -618,6 +618,13 @@ body {
   cursor: not-allowed;
 }
 
+.btn-outline--sm {
+  height: 36px;
+  padding: 8px 16px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
 .history-header {
   display: flex;
   align-items: center;
@@ -680,6 +687,89 @@ body {
   font-weight: 700;
   font-size: 14px;
   margin: 0 var(--spacing-xxxs);
+}
+
+/* ── Saved Draws (Supabase) ── */
+
+.saved-draws-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.saved-draws-loading,
+.saved-draws-error,
+.saved-draws-empty {
+  text-align: center;
+  padding: var(--spacing-sm);
+  font-size: 13px;
+  color: var(--color-body);
+}
+
+.saved-draws-error {
+  color: var(--color-semantic-warning);
+}
+
+.saved-draws-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.saved-draw-item {
+  padding: var(--spacing-xs);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+}
+
+.saved-draw-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xxs);
+}
+
+.saved-draw-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 1px solid var(--color-hairline);
+}
+
+.saved-draw-badge--draw {
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.saved-draw-badge--saju {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.saved-draw-date {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.saved-draw-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xxs);
+}
+
+.saved-draw-summary {
+  margin-top: var(--spacing-xxs);
+  font-size: 12px;
+  color: var(--color-body);
+  line-height: 1.5;
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--spacing-xxs);
 }
 
 .light-band {

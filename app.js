@@ -229,12 +229,14 @@ async function draw() {
 
   historyList.innerHTML = "";
   historySection.hidden = count <= 1;
+  const drawnSets = [];
 
   for (let i = 0; i < count; i++) {
     resetBalls();
     populateDrumBalls();
     const result = generateLottoSet(includeBonus);
     await animateReveal(result.main, result.bonus);
+    drawnSets.push(result);
 
     if (count > 1) {
       addHistoryItem(i + 1, result);
@@ -245,8 +247,25 @@ async function draw() {
     }
   }
 
+  await saveDrawnSets(drawnSets);
+
   isDrawing = false;
   drawBtn.disabled = false;
+}
+
+async function saveDrawnSets(sets) {
+  for (const { main, bonus } of sets) {
+    try {
+      await LottoStorage.saveLottoDraw({
+        numbers: main,
+        bonus,
+        source: "draw",
+      });
+    } catch (err) {
+      console.warn("추첨 번호 저장 실패:", err.message);
+    }
+  }
+  loadSavedDraws();
 }
 
 drawBtn.addEventListener("click", draw);
@@ -265,6 +284,92 @@ includeBonusCheckbox.addEventListener("change", () => {
     bonusSection.hidden = !includeBonusCheckbox.checked;
   }
 });
+
+const savedDrawsLoading = document.getElementById("savedDrawsLoading");
+const savedDrawsError = document.getElementById("savedDrawsError");
+const savedDrawsList = document.getElementById("savedDrawsList");
+const savedDrawsEmpty = document.getElementById("savedDrawsEmpty");
+const refreshSavedBtn = document.getElementById("refreshSavedBtn");
+
+function formatSavedDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function renderSavedDrawItem(draw) {
+  const li = document.createElement("li");
+  li.className = "saved-draw-item";
+
+  const meta = document.createElement("div");
+  meta.className = "saved-draw-meta";
+
+  const badge = document.createElement("span");
+  badge.className = `saved-draw-badge saved-draw-badge--${draw.source}`;
+  badge.textContent = draw.source === "saju" ? "사주" : "추첨";
+  meta.appendChild(badge);
+
+  const date = document.createElement("span");
+  date.className = "saved-draw-date";
+  date.textContent = formatSavedDate(draw.created_at);
+  meta.appendChild(date);
+
+  li.appendChild(meta);
+
+  const balls = document.createElement("div");
+  balls.className = "saved-draw-numbers";
+  draw.numbers.forEach((num) => balls.appendChild(createMiniBall(num)));
+
+  if (draw.bonus != null) {
+    const plus = document.createElement("span");
+    plus.className = "bonus-divider";
+    plus.textContent = "+";
+    balls.appendChild(plus);
+    balls.appendChild(createMiniBall(draw.bonus));
+  }
+
+  li.appendChild(balls);
+
+  if (draw.saju_summary) {
+    const summary = document.createElement("p");
+    summary.className = "saved-draw-summary";
+    summary.textContent = draw.saju_summary;
+    li.appendChild(summary);
+  }
+
+  return li;
+}
+
+async function loadSavedDraws() {
+  savedDrawsLoading.hidden = false;
+  savedDrawsError.hidden = true;
+  savedDrawsEmpty.hidden = true;
+
+  try {
+    const draws = await LottoStorage.fetchLottoDraws(50);
+    savedDrawsLoading.hidden = true;
+    savedDrawsList.innerHTML = "";
+
+    if (!draws.length) {
+      savedDrawsEmpty.hidden = false;
+      return;
+    }
+
+    draws.forEach((draw) => savedDrawsList.appendChild(renderSavedDrawItem(draw)));
+  } catch (err) {
+    savedDrawsLoading.hidden = true;
+    savedDrawsError.hidden = false;
+    savedDrawsError.textContent = err.message;
+  }
+}
+
+refreshSavedBtn.addEventListener("click", loadSavedDraws);
+window.loadSavedDraws = loadSavedDraws;
 
 const LOTTO_DATA_URL = "https://smok95.github.io/lotto/results/all.json";
 const PAGE_SIZE = 20;
@@ -407,4 +512,5 @@ nextPageBtn.addEventListener("click", () => {
 roundSearch.addEventListener("input", applySearch);
 
 populateDrumBalls();
+loadSavedDraws();
 loadWinningHistory();
